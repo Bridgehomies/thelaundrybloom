@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Laundry - Loading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes clothesSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            animation: float linear forwards;
+        }
+        
+        .clothes-icon {
+            animation: clothesSpin 2s linear infinite;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 h-screen overflow-hidden flex flex-col items-center justify-center">
+    <div id="bubbles-container" class="absolute inset-0 overflow-hidden"></div>
+    
+    <div class="relative z-10 text-center px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md mx-auto">
+            <div class="flex justify-center mb-6">
+                <div class="relative h-24 w-24">
+                    <i class="fas fa-tshirt clothes-icon text-4xl text-blue-500 absolute top-0 left-0"></i>
+                    <i class="fas fa-socks clothes-icon text-4xl text-blue-400 absolute top-0 right-0" style="animation-delay: 0.5s;"></i>
+                    <i class="fas fa-tshirt clothes-icon text-4xl text-blue-300 absolute bottom-0 left-0" style="animation-delay: 1s;"></i>
+                    <i class="fas fa-socks clothes-icon text-4xl text-blue-600 absolute bottom-0 right-0" style="animation-delay: 1.5s;"></i>
+                </div>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">Fresh Laundry</h1>
+            <p class="text-blue-600 mb-6">Getting your clothes ready...</p>
+            
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
+                <div id="progress-bar" class="progress-bar h-4 rounded-full bg-gradient-to-r from-blue-400 to-blue-600"></div>
+            </div>
+            
+            <div class="flex justify-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-blue-400 animate-bounce" style="animation-delay: 0.1s;"></div>
+                <div class="w-3 h-3 rounded-full bg-blue-500 animate-bounce" style="animation-delay: 0.2s;"></div>
+                <div class="w-3 h-3 rounded-full bg-blue-600 animate-bounce" style="animation-delay: 0.3s;"></div>
+            </div>
+            
+            <p id="status-text" class="text-sm text-gray-500 mt-4">Sorting clothes...</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create bubbles
+            const bubblesContainer = document.getElementById('bubbles-container');
+            const statusText = document.getElementById('status-text');
+            const progressBar = document.getElementById('progress-bar');
+            
+            // Status messages
+            const statusMessages = [
+                "Sorting clothes...",
+                "Adding detergent...",
+                "Washing cycle started...",
+                "Rinsing...",
+                "Spinning...",
+                "Almost done...",
+                "Your laundry is ready!"
+            ];
+            
+            // Create bubbles
+            function createBubble() {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 30 + 10;
+                const posX = Math.random() * window.innerWidth;
+                const duration = Math.random() * 6 + 4;
+                
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${posX}px`;
+                bubble.style.bottom = '-50px';
+                bubble.style.animationDuration = `${duration}s`;
+                
+                bubblesContainer.appendChild(bubble);
+                
+                // Remove bubble after animation completes
+                setTimeout(() => {
+                    bubble.remove();
+                }, duration * 1000);
+            }
+            
+            // Create bubbles periodically
+            setInterval(createBubble, 300);
+            
+            // Simulate loading progress
+            let progress = 0;
+            let statusIndex = 0;
+            
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = `${progress}%`;
+                
+                // Update status text at certain intervals
+                if (progress > statusIndex * (100 / (statusMessages.length - 1))) {
+                    statusText.textContent = statusMessages[statusIndex];
+                    statusIndex++;
+                }
+                
+                // Complete loading
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        // Here you would typically redirect or load the main content
+                        statusText.textContent = "Redirecting to your fresh laundry...";
+                        setTimeout(() => {
+                            // Simulate redirect
+                            alert("Loading complete! This would redirect to the main page.");
+                        }, 1000);
+                    }, 500);
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
